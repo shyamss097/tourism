@@ -1,10 +1,25 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from .forms import UserSignupForm, ManagerSignupForm, UserLoginForm, ManagerLoginForm
-from .models import User, Manager
+from .models import *
+from django.contrib.auth.decorators import login_required
 
 def homepage(request):
     return render(request, 'base.html')
+
+@login_required
+def user_dashboard(request):
+    packages = request.user.packages_booked.all()
+    return render(request, 'user_dashboard.html', {'packages': packages})
+
+@login_required
+def manager_dashboard(request):
+    packages = Package.objects.filter(manager=request.user)
+    return render(request, 'manager_dashboard.html', {'packages': packages})
+
+def packages_list(request):
+    packages = Package.objects.all()
+    return render(request, 'packages_list.html', {'packages': packages})
 
 
 def user_signup(request):
