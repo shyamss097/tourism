@@ -1,88 +1,50 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from .forms import UserSignupForm, ManagerSignupForm, UserLoginForm, ManagerLoginForm
+from .forms import CustomUserCreationForm
 from .models import *
 from django.contrib.auth.decorators import login_required
 
 def homepage(request):
     return render(request, 'base.html')
 
-@login_required
-def user_dashboard(request):
-    packages = request.user.packages_booked.all()
-    return render(request, 'user_dashboard.html', {'packages': packages})
-
-@login_required
-def manager_dashboard(request):
-    packages = Package.objects.filter(manager=request.user)
-    return render(request, 'manager_dashboard.html', {'packages': packages})
-
-def packages_list(request):
-    packages = Package.objects.all()
-    return render(request, 'packages_list.html', {'packages': packages})
-
-
-def user_signup(request):
+def register(request):
     if request.method == 'POST':
-        form = UserSignupForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_manager = False
+            user.is_manager = form.cleaned_data['is_manager']
             user.save()
-            user_profile = User(user=user, phone=form.cleaned_data['phone'], address=form.cleaned_data['address'])
-            user_profile.save()
-            login(request, user)
-            return redirect('user_dashboard')
-    else:
-        form = UserSignupForm()
-    return render(request, 'user_signup.html', {'form': form})
-
-
-def manager_signup(request):
-    if request.method == 'POST':
-        form = ManagerSignupForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_manager = True
-            user.save()
-            manager_profile = Manager(user=user, phone=form.cleaned_data['phone'])
-            manager_profile.save()
-            login(request, user)
-            return redirect('manager_dashboard')
-    else:
-        form = ManagerSignupForm()
-    return render(request, 'manager_signup.html', {'form': form})
-
-
-def user_login(request):
-    if request.method == 'POST':
-        form = UserLoginForm(request.POST)
-        if form.is_valid():
+            # authenticate and log in the user
             username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+            password = form.cleaned_data['password1']
             user = authenticate(request, username=username, password=password)
-            if user is not None and user.is_manager is False:
-                login(request, user)
-                return redirect('user_dashboard')
+            login(request, user)
+            # redirect to appropriate dashboard
+            if user.is_manager:
+                return redirect('home')
             else:
-                form.add_error(None, 'Invalid username or password')
+                return redirect('home')
     else:
-        form = UserLoginForm()
-    return render(request, 'user_login.html', {'form': form})
+        form = CustomUserCreationForm()
+    return render(request,'register.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
 
 
-def manager_login(request):
+def login_view(request):
     if request.method == 'POST':
-        form = ManagerLoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None and user.is_manager is True:
-                login(request, user)
-                return redirect('manager_dashboard')
-            else:
-                form.add_error(None, 'Invalid username or password')
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home') # Replace 'home' with your desired redirect URL
+        else:
+            # Show an error message if authentication fails
+            error_message = "Invalid login credentials. Please try again."
+            return render(request, 'registration/login.html', {'error_message': error_message})
     else:
-        form = ManagerLoginForm()
-    return render(request, 'manager_login.html', {'form': form})
+        return render(request, 'login.html')
+

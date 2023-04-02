@@ -4,21 +4,24 @@ from django.db import models
 
 class CustomUser(AbstractUser):
     is_manager = models.BooleanField(default=False)
-
-
-class Manager(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=20)
-
+    name = models.CharField(default='name',null=True,max_length=255)
+    phone = models.CharField(null=True,blank=True,max_length=20)
+    
+    # Add any other fields as necessary
+    
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['name', 'email', 'phone']
+    
     def __str__(self):
-        return self.user.username
+        return self.username
+    
+
+
+
 
 
 class Package(models.Model):
-    PACKAGE_SOURCES = (
-        ('INTERNATIONAL', 'International'),
-        ('DOMESTIC', 'Domestic')
-    )
+   
 
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -26,7 +29,7 @@ class Package(models.Model):
     source = models.CharField(max_length=100)
     start_date = models.DateField()
     duration = models.PositiveIntegerField()
-    manager = models.ForeignKey(Manager, on_delete=models.CASCADE)
+    manager = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -50,17 +53,10 @@ class Accommodation(models.Model):
         return self.name
 
 
-class User(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=20)
-    address = models.TextField()
-
-    def __str__(self):
-        return self.user.username
 
 
 class Booking(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)
