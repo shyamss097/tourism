@@ -1,0 +1,11 @@
+{% extends 'travel/base.html' %}
+
+{% block content %}
+  <h2>Ticket</h2>
+  <p><strong>User:</strong> {{ ticket_info.user }}</p>
+  <p><strong>Package:</strong> {{ ticket_info.package }}</p>
+  <p><strong>Food:</strong> {{ ticket_info.food }}</p>
+  <p><strong>Accommodation:</strong> {{ ticket_info.accommodation }}</p>
+  <p><strong>Duration:</strong> {{ ticket_info.duration }} days</p>
+  <p><strong>Total Price:</strong> {{ ticket_info.total_price }}</p>
+{% endblock %}

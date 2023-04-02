@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Available Packages</h1>
+  <ul>
+    {% for package in packages %}
+    <li><a href="{% url 'package_detail' package.pk %}">{{ package.name }}</a> - {{ package.price }}</li>
+    {% empty %}
+      <li>No packages available at this time.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

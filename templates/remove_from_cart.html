@@ -1,0 +1,23 @@
+{% extends 'travel/base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          Remove Item From Order
+        </div>
+        <div class="card-body">
+          <p>Are you sure you want to remove "{{ cart_item.package }}" from your order?</p>
+          <form method="POST">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-danger" value="Remove">
+            <a href="{% url 'travel:view-cart' %}" class="btn btn-primary">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
