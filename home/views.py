@@ -6,7 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 def homepage(request):
-    return render(request, 'base.html')
+    packages = Package.objects.all()
+
+    return render(request, 'base.html', {'packages': packages})
 
 def aboutpage(request):
     return render(request, 'about.html')
@@ -62,88 +64,67 @@ def package_list(request):
 
 
 
+@login_required
 def package_detail(request, pk):
     package = get_object_or_404(Package, pk=pk)
-
-    # get all accommodations and their prices
-    accommodations = Accommodation.objects.all().values('id', 'name', 'price')
-    # get all foods and their prices
-    foods = Food.objects.all().values('id', 'name', 'price')
 
     if request.method == 'POST':
         # get selected accommodation and its price
         accommodation_id = request.POST.get('accommodation')
         if accommodation_id:
             accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
-            accommodation_price = accommodation.price
+            request.session['selected_accommodation'] = {
+                'id': accommodation.id,
+                'name': accommodation.name,
+                'price': accommodation.price
+            }
         else:
-            accommodation = None
-            accommodation_price = 0
+            request.session.pop('selected_accommodation', None)
 
         # get selected food and its price
         food_id = request.POST.get('food')
         if food_id:
             food = get_object_or_404(Food, pk=food_id)
-            food_price = food.price
+            request.session['selected_food'] = {
+                'id': food.id,
+                'name': food.name,
+                'price': food.price
+            }
         else:
-            food = None
-            food_price = 0
+            request.session.pop('selected_food', None)
 
-        # calculate total cost
-        total_duration = package.duration
-        total_food_cost = total_duration * food_price * 3
-        total_accommodation_cost = total_duration * accommodation_price
+        return redirect('cart')
 
-        # render template with selected options and total cost
-        return render(request, 'travel/package_detail.html', {
-            'package': package,
-            'accommodations': accommodations,
-            'foods': foods,
-            'selected_accommodation': accommodation,
-            'selected_food': food,
-            'total_food_cost': total_food_cost,
-            'total_accommodation_cost': total_accommodation_cost,
-            'total_cost': package.price + total_food_cost + total_accommodation_cost,
-        })
-
-    # render template with all options and no selections
+    # render template with package details and form to select food and accommodation
+    accommodations = Accommodation.objects.all()
+    foods = Food.objects.all()
     return render(request, 'package_detail.html', {
         'package': package,
         'accommodations': accommodations,
         'foods': foods,
-        'selected_accommodation': None,
-        'selected_food': None,
-        'total_food_cost': 0,
-        'total_accommodation_cost': 0,
-        'total_cost': package.price,
     })
 
 
-def add_to_cart(request, package_id):
-    # Retrieve the package
-    package = get_object_or_404(Package, pk=package_id)
+def cart(request):
+    package = get_object_or_404(Package, pk=request.session['selected_package']['id'])
 
-    # Get the selected food and accommodation types from the form
-    selected_foods = request.POST.getlist('food')
-    selected_accommodation_id = request.POST.get('accommodation')
-    selected_accommodation = get_object_or_404(Accommodation, pk=selected_accommodation_id)
+    selected_accommodation = request.session.get('selected_accommodation')
+    selected_food = request.session.get('selected_food')
 
-    # Calculate the total cost of the package based on the selected options
-    duration = int(request.POST.get('duration'))
-    selected_foods = [food for food in selected_foods if isinstance(food, Food)]
-    food_cost = sum([food.price for food in selected_foods]) * duration * 3  # 3 meals per day
-    accommodation_cost = selected_accommodation.price * duration
-    total_price = package.price + food_cost + accommodation_cost
+    total_duration = package.duration
+    total_accommodation_cost = selected_accommodation['price'] * total_duration if selected_accommodation else 0
+    total_food_cost = selected_food['price'] * total_duration * 3 if selected_food else 0
+    total_cost = package.price + total_accommodation_cost + total_food_cost
 
-    # Create a new cart item and add the selected food and accommodation types
-    cart_item = CartItem(package=package, duration=duration, accommodation=selected_accommodation, total_price=total_price,  user=request.user)
-    cart_item.save()
-    cart_item.food.set(selected_foods)  # Use set() to add selected foods to the cart item
-
-    
-
-    # Redirect to the cart page
-    return redirect('view-cart')
+    return render(request, 'cart.html', {
+        'package': package,
+        'selected_accommodation': selected_accommodation,
+        'selected_food': selected_food,
+        'total_duration': total_duration,
+        'total_accommodation_cost': total_accommodation_cost,
+        'total_food_cost': total_food_cost,
+        'total_cost': total_cost,
+    })
 
 def view_cart(request):
     cart_items = CartItem.objects.filter(cart__user=request.user)

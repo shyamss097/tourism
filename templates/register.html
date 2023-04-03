@@ -34,23 +34,40 @@
     </style>
   </head>
   <body>
-    <form action="" method="post">
-      {% csrf_token %}
-      <h2>Signup Form</h2>
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required>
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required>
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required>
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
-      <label for="confirm_password">Confirm Password:</label>
-      <input type="password" id="confirm_password" name="confirm_password" required>
-      <label for="is_manager">Are you a manager?</label>
-      <input type="checkbox" id="is_manager" name="is_manager">
-      <input type="submit" value="Signup">
-      <p>Have an account? <a href="{% url 'login' %}">Login</a></p>
-    </form>
+    <div class="container mt-4">
+      <h2>Sign up</h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <form method="POST" class="form">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="{{ form.username.id_for_label }}">Username</label>
+              {{ form.username }}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.password1.id_for_label }}">Password</label>
+              {{ form.password1 }}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+              {{ form.password2 }}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.name.id_for_label }}">Name</label>
+              {{ form.name }}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.phone.id_for_label }}">Phone</label>
+              {{ form.phone }}
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="{{ form.is_manager.id_for_label }}" name="{{ form.is_manager.name }}">
+              <label class="form-check-label" for="{{ form.is_manager.id_for_label }}">Manager</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Sign up</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
