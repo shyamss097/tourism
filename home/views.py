@@ -8,6 +8,12 @@ from django.contrib import messages
 def homepage(request):
     return render(request, 'base.html')
 
+def aboutpage(request):
+    return render(request, 'about.html')
+def contactpage(request):
+    return render(request, 'contact.html')
+
+
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)

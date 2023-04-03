@@ -1,18 +1,72 @@
-{% extends 'base.html' %}
-
-{% block content %}
-  <h2>Login</h2>
-  {% if error_message %}
-    <p>{{ error_message }}</p>
-  {% endif %}
-  <form method="post">
-    {% csrf_token %}
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required autofocus>
-    <br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    <br>
-    <button type="submit">Login</button>
-  </form>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Signup Form</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f2f2f2;
+		}
+		.container {
+			margin: 100px auto;
+			max-width: 500px;
+			background-color: #fff;
+			border-radius: 5px;
+			padding: 20px;
+			box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+		}
+		h1 {
+			text-align: center;
+			color: #4CAF50;
+		}
+		input[type=text], input[type=password] {
+			width: 100%;
+			padding: 12px 20px;
+			margin: 8px 0;
+			display: inline-block;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+		button {
+			background-color: #4CAF50;
+			color: #fff;
+			padding: 14px 20px;
+			margin: 8px 0;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			width: 100%;
+		}
+		button:hover {
+			background-color: #45a049;
+		}
+		.error {
+			color: red;
+			font-size: 14px;
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Signup</h1>
+		{% if error %}
+		<p class="error">{{ error }}</p>
+		{% endif %}
+    <div class="form-container">
+      <form class="form" method="post">
+        <h2>Login</h2>
+        {% csrf_token %}
+        <label for="username">Username:</label>
+      <input type="text" id="username" name="username"><br><br>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password"><br><br>
+      
+        <button type="submit">Login</button>
+        <p>Don't have an account? <a href="{% url 'user_signup' %}">Register</a></p>
+      </form>
+    </div>
+	</div>
+</body>
+</html>
