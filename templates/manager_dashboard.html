@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %} | Manager Dashboard{% endblock %}
+
+{% block content %}
+  <h1>Welcome, {{ user.username }}!</h1>
+  <p>You are currently logged in as a manager.</p>
+  <p>Here are the packages that you manage:</p>
+  <ul>
+    {% if package %}
+      <li>{{ package.name }} - {{ package.duration }} days</li>
+      
+    {% else %}
+      <li>You don't have any packages yet.</li>
+      {% endif %}
+  </ul>
+  <ul>
+    {% for tourist in tourists %}
+      <li>{{ tourist.user.name }} - {{ tourist.food_price }} days</li>
+    {% empty %}
+      <li>You don't have any packages yet.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

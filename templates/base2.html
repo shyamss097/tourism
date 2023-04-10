@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="{% url 'home' %}">Home</a></li>
+      {% comment %} <li><a href="{% url 'packages_list' %}">Packages</a></li> {% endcomment %}
+      {% if user.is_authenticated %}
+        {% comment %} {% comment %} {% comment %} {% if user.is_manager %} {% endcomment %}
+          {% comment %} <li><a href="{% url 'manager_dashboard' %}">Manager Dashboard</a></li>
+        {% else %}
+          <li><a href="{% url 'user_dashboard' %}">User Dashboard</a></li>
+        {% endif %} {% endcomment %}
+        <li><a href="{% url 'view-cart' %}">View Cart</a></li>
+        <li><a href="{% url 'package_list' %}">Packages</a></li>
+        <li><a href="{% url 'logout' %}">Logout</a></li> 
+      {% else %}
+        <li><a href="{% url 'user_signup' %}">User Signup</a></li>
+        {% comment %} <li><a href="{% url 'manager_signup' %}">Manager Signup</a></li>
+        
+        <li><a href="{% url 'manager_login' %}">Manager Login</a></li> {% endcomment %}
+        
+        <li><a href="{% url 'package_list' %}">Packages</a></li>
+        <li><a href="{% url 'login' %}">Login</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% block content %}{% endblock %}
+</body>
+</html>

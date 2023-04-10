@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+  <h1>Welcome, {{ user.username }}!</h1>
+  <p>You are currently logged in as a regular user.</p>
+  <p>Here are the packages that you have booked:</p>
+  <ul>
+    {% for package in packages %}
+      <li>{{ package.name }} - {{ package.duration }} days</li>
+    {% empty %}
+      <li>You haven't booked any packages yet.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

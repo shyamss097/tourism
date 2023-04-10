@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+<h1>ORDERS</h1>
+    
+ {% for order in orders %}
+   <table class="table">
+     <thead>
+       <tr>
+         <th>Order ID:</th>
+         <th>Package</th>
+         <th>Duration</th>
+         <th>Food(per meal)</th>
+         <th>Accommodation(per day)</th>
+         <th>Total Price</th>
+         <th>Date ordered</th>
+         <th>Action</th>
+       </tr>
+     </thead>
+     <tbody>
+       
+         <tr>
+           <td>{{ order.order_id }}</td>
+           <td>{{ order.package.name }}</td>
+           <td>{{ order.package.duration }}</td>
+           <td>
+             
+               {{ order.food_price }}<br>
+             
+           </td>
+           <td>{{ order.accommodation_price }}</td>
+           <td>{{ order.total_price }}</td>
+           <td>{{ order.created_at}}</td>
+           <td> 
+             <a href="{% url 'cancel_order' order.order_id %}" class="btn btn-danger">Cancel order</a>
+           </td> 
+           {% comment %} <td><a href="{% url 'ticket' .pk cart.package.pk %}" class="btn btn-success">Place order and get ticket</a></td> {% endcomment %}
+         </tr>
+
+       
+      <br>
+     </tbody>
+   </table>
+{% endfor %}
+
+
+
+{% endblock content %}
+
+
+
+

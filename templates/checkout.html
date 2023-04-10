@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Checkout</h1>
+  <p>Please review your order before submitting it:</p>
+  <table class="table">
+    <tr>
+      <th>Package</th>
+      <td>{{ package.name }}</td>
+    </tr>
+    <tr>
+      <th>Duration</th>
+      <td>{{ package.duration }}</td>
+    </tr>
+    <tr>
+      <th>Food</th>
+      <td>
+        {% for food in selected_foods %}
+          {{ food.name }} ({{ food.price }})<br>
+        {% endfor %}
+      </td>
+    </tr>
+    <tr>
+      <th>Accommodation</th>
+      <td>{{ selected_accommodation.name }} ({{ selected_accommodation.price }})</td>
+    </tr>
+    <tr>
+      <th>Total Price</th>
+      <td>{{ total_price }}</td>
+    </tr>
+  </table>
+  <form method="POST">
+    {% csrf_token %}
+    <input type="submit" class="btn btn-primary" value="Submit Order">
+  </form>
+{% endblock %}

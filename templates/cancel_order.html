@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          Cancel order
+        </div>
+        <div class="card-body">
+          {% if can_cancel == 1 %}
+          <p>Are you sure you want to cancel order with ID "{{ order.order_id }}"?</p>
+          <form method="POST">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-danger" value="Cancel Order">
+            {% else %}
+            <p>You cannot cancel the order if the package start date is already over!</p>
+            {% endif %}
+            <a href="{% url 'orders' %}" class="btn btn-primary">Back</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Signup Form</title>
+    <style>
+      /* Center the form */
+      form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      /* Style form elements */
+      input[type="text"], input[type="email"], input[type="password"], input[type="submit"] {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+      input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+      }
+      /* Add media query for small screens */
+      @media screen and (max-width: 600px) {
+        form {
+          height: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-4">
+      <h2>Sign up</h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <form method="POST" class="form">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="{{ form.username.id_for_label }}">Username</label>
+              {{ form.username }}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.password1.id_for_label }}">Password</label>
+              {{ form.password1 }}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+              {{ form.password2 }}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.name.id_for_label }}">Name</label>
+              {{ form.name }}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.phone.id_for_label }}">Phone</label>
+              {{ form.phone }}
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="{{ form.is_manager.id_for_label }}" name="{{ form.is_manager.name }}">
+              <label class="form-check-label" for="{{ form.is_manager.id_for_label }}">Manager</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Sign up</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
