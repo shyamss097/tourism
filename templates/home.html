@@ -21,8 +21,13 @@
                     {% if user.is_manager %}
                     <li class="nav-item"><a href={%url 'manager_dashboard'%} class="nav-link">Dashboard</a></li>
                     {% endif %}
+					{%if user.is_authenticated and user.is_superuser %}
+					<li class="nav-item"><a href="/admin" class="nav-link">Admin Panel</a></li>
+					
+					{% endif %}
 
 					<li class="nav-item"><a href={%url 'cart'%} class="nav-link">Cart</a></li>
+					<li class="nav-item"><a href={%url 'orders'%} class="nav-link">Orders</a></li>
 					<li class="nav-item"><a href={%url 'logout'%} class="nav-link">Logout</a></li>
 					{% else %}
 					<li class="nav-item"><a href={%url 'user_signup'%} class="nav-link">Sign up</a></li>
@@ -70,7 +75,7 @@
 								<div class="tab-content" id="v-pills-tabContent">
 
 									<div class="tab-pane fade show active" id="v-pills-1" role="tabpanel" aria-labelledby="v-pills-nextgen-tab">
-										<form method='POST' class="search-property-1">
+										<form method="get" action="{% url 'search_destination' %}" class="search-property-1">
 											{% csrf_token %}
 											<div class="row no-gutters">
 												<div class="col-md d-flex">
@@ -78,7 +83,7 @@
 														<label="destination">Destination</label>
 														<div class="form-field">
 															<div class="icon"><span class="fa fa-search"></span></div>
-															<input type="text" class="form-control" placeholder="Search place">
+															<input type="text" name="location" class="form-control" placeholder="Search place">
 														</div>
 													</div>
 												</div>
@@ -115,16 +120,16 @@
 				<div class="col-md-4 ftco-animate">
 				   <div class="project-wrap">
 					  <a href={% url 'package_detail' package.pk %} class="img" style="background-image: url({%static 'images/package-1.jpg'%});">
-						 <span class="price">{{package.price}}</span>
+						 <span class="price">from {{package.price}}</span>
 					 </a>
 					 <div class="text p-4">
-						 <span class="days">8 Days Tour</span>
+						 <span class="days">{{package.duration}} Days Tour</span>
 						 <h3><a href="{% url 'package_detail' package.pk %}">{{ package.name }}</a></h3>
-						 <p class="location"><span class="fa fa-map-marker"></span> Location Name</p>
+						 <p class="location"><span class="fa fa-map-marker"></span> From: {{package.source}}</p>
 						 <ul>
-							<li><span class="flaticon-shower"></span>2</li>
-							<li><span class="flaticon-king-size"></span>3</li>
-							<li><span class="flaticon-mountains"></span>Near Mountain</li>
+							<li><span class="flaticon-shower"></span>Food</li>
+							<li><span class="flaticon-king-size"></span>Accommodation</li>
+							<li><span class="flaticon-mountains"></span>{{package.start_date}}</li>
 						</ul>
 					</div>
 				</div>
@@ -138,11 +143,9 @@
 		 </div>
 		 {% endif %}
 
-		 <form method="get" action="{% url 'search_destination' %}">
-			<input type="text" name="location">
-			<button type="submit">Search</button>
-		</form>
+		 
 
+		
 
 		<section class="ftco-section services-section">
 			<div class="container">
@@ -164,7 +167,7 @@
 									<div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-paragliding"></span></div>
 									<div class="media-body">
 										<h3 class="heading mb-3">Activities</h3>
-										<p>A small river named Duden flows by their place and supplies it with the necessary</p>
+										<p>For recreation on board, we engage you with indoor games, quiz competitions, select music, movies and more on all our group tours.</p>
 									</div>
 								</div>      
 							</div>
@@ -173,7 +176,7 @@
 									<div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-route"></span></div>
 									<div class="media-body">
 										<h3 class="heading mb-3">Travel Arrangements</h3>
-										<p>A small river named Duden flows by their place and supplies it with the necessary</p>
+										<p>Experienced and informative Tour Escorts, accompanying you for the entire group tour, will take all measures professionally to make your holiday just perfect and carefree like never before, every time you travel.</p>
 									</div>
 								</div>    
 							</div>
@@ -181,8 +184,8 @@
 								<div class="services services-1 color-3 d-block img" style="background-image: url({%static 'images/services-3.jpg'%});">
 									<div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-tour-guide"></span></div>
 									<div class="media-body">
-										<h3 class="heading mb-3">Private Guide</h3>
-										<p>A small river named Duden flows by their place and supplies it with the necessary</p>
+										<h3 class="heading mb-3">Reading Material</h3>
+										<p>Newspapers to keep you abreast with latest developments, Magazines in English and Kannada, are made available on all domestic group tours.</p>
 									</div>
 								</div>      
 							</div>
@@ -190,8 +193,9 @@
 								<div class="services services-1 color-4 d-block img" style="background-image: url({%static 'images/services-4.jpg'%});">
 									<div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-map"></span></div>
 									<div class="media-body">
-										<h3 class="heading mb-3">Location Manager</h3>
-										<p>A small river named Duden flows by their place and supplies it with the necessary</p>
+										<h3 class="heading mb-3">Medical Care</h3>
+										<p>Medicine for minor ailments, vomiting bags, journey sickness tablets are available on request on our group tours.
+										</p>
 									</div>
 								</div>      
 							</div>
@@ -205,72 +209,15 @@
 			<div class="container">
 				<div class="row justify-content-center pb-4">
 					<div class="col-md-12 heading-section text-center ftco-animate">
-						<span class="subheading">Pacific Provide Places</span>
+						<span class="subheading">Tourism Provide Places</span>
 						<h2 class="mb-4">Select Your Destination</h2>
 					</div>
 				</div>
 			</div>
-			<div class="container container-2">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="carousel-destination owl-carousel ftco-animate">
-							<div class="item">
-								<div class="project-destination">
-									<a href="#" class="img" style="background-image: url({%static "images/place-1.jpg"%});">
-										<div class="text">
-											<h3>Philippines</h3>
-											<span>8 Tours</span>
-										</div>
-									</a>
-								</div>
-							</div>
-							<div class="item">
-								<div class="project-destination">
-									<a href="#" class="img" style="background-image: url({%static 'images/place-2.jpg'%});">
-										<div class="text">
-											<h3>Canada</h3>
-											<span>2 Tours</span>
-										</div>
-									</a>
-								</div>
-							</div>
-							<div class="item">
-								<div class="project-destination">
-									<a href="#" class="img" style="background-image: url({%static 'images/place-3.jpg'%});">
-										<div class="text">
-											<h3>Thailand</h3>
-											<span>5 Tours</span>
-										</div>
-									</a>
-								</div>
-							</div>
-							<div class="item">
-								<div class="project-destination">
-									<a href="#" class="img" style="background-image: url({%static 'images/place-4.jpg'%});">
-										<div class="text">
-											<h3>Autralia</h3>
-											<span>5 Tours</span>
-										</div>
-									</a>
-								</div>
-							</div>
-							<div class="item">
-								<div class="project-destination">
-									<a href="#" class="img" style="background-image: url({%static 'images/place-5.jpg'%});">
-										<div class="text">
-											<h3>Greece</h3>
-											<span>7 Tours</span>
-										</div>
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+			
+		{% comment %} </section> {% endcomment %}
 
-		<section class="ftco-section">
+		{% comment %} <section class="ftco-section"> {% endcomment %}
   
 			<div class="container">
 		 
@@ -279,16 +226,16 @@
 				<div class="col-md-4 ftco-animate">
 				   <div class="project-wrap">
 					  <a href={% url 'package_detail' package.pk %} class="img" style="background-image: url({%static 'images/package-1.jpg'%});">
-						 <span class="price">{{package.price}}</span>
+						 <span class="price">from {{package.price}}</span>
 					 </a>
 					 <div class="text p-4">
-						 <span class="days">8 Days Tour</span>
+						 <span class="days">{{package.duration}} Days Tour</span>
 						 <h3><a href="{% url 'package_detail' package.pk %}">{{ package.name }}</a></h3>
-						 <p class="location"><span class="fa fa-map-marker"></span> Location Name</p>
+						 <p class="location"><span class="fa fa-map-marker"></span> From: {{package.source}}</p>
 						 <ul>
-							<li><span class="flaticon-shower"></span>2</li>
-							<li><span class="flaticon-king-size"></span>3</li>
-							<li><span class="flaticon-mountains"></span>Near Mountain</li>
+							<li><span class="flaticon-shower"></span>Food</li>
+							<li><span class="flaticon-king-size"></span>Accommodation</li>
+							<li><span class="flaticon-mountains"></span>{{package.start_date}}</li>
 						</ul>
 					</div>
 				</div>
@@ -296,10 +243,11 @@
 			{% empty %}
 			   <li>No packages available at this time.</li>
 			 {% endfor %}
-			
+		
 		 
 		 </div>
 		 </div>
+		</section>
 		<section class="ftco-section ftco-about img"style="background-image: url({%static 'images/bg_4.jpg'%});">
 			<div class="overlay"></div>
 			<div class="container py-md-5">
@@ -328,7 +276,7 @@
 										<span class="subheading">About Us</span>
 										<h2 class="mb-4">Make Your Tour Memorable and Safe With Us</h2>
 										<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
-										<p><a href="#" class="btn btn-primary">Book Your Destination</a></p>
+										<p><a href={% url 'package_list' %} class="btn btn-primary">Book Your Destination</a></p>
 									</div>
 								</div>
 							</div>
@@ -464,20 +412,7 @@
 
 		
 
-		<section class="ftco-intro ftco-section ftco-no-pt">
-			<div class="container">
-				<div class="row justify-content-center">
-					<div class="col-md-12 text-center">
-						<div class="img"  style="background-image: url({%static 'images/bg_2.jpg'%});">
-							<div class="overlay"></div>
-							<h2>We Are Pacific A Travel Agency</h2>
-							<p>We can manage your dream building A small river named Duden flows by their place</p>
-							<p class="mb-0"><a href="#" class="btn btn-primary px-4 py-3">Ask For A Quote</a></p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+	
 
 {% endblock content %}
 

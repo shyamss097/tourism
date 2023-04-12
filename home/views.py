@@ -35,11 +35,16 @@ def homepage(request):
 def search_destination(request):
     search_flag = 1
     query = request.GET.get('location')
-    place = Places.objects.filter(place__icontains=query)
-    print(place)
-    search_packages = place.package
-  
-    return render(request, 'home.html', {'search_flag': search_flag, 'search_packages': search_packages})
+    places = Places.objects.filter(place__icontains=query)
+    packages = []
+    for place in places:
+            for package in place.package.all():
+                if package not in packages:
+                    packages.append(package)
+    print(places)
+    search_packages = packages
+    print(search_packages)
+    return render(request, 'home.html', {'search_flag': search_flag, 'search_packages': search_packages, })
 
 def aboutpage(request):
     return render(request, 'about.html')
@@ -100,6 +105,8 @@ def package_detail(request, pk):
     accommodations = Accommodation.objects.filter(package=pk).values('id', 'name', 'price')
     # get all foods and their prices
     foods = Food.objects.filter(package=pk).values('id', 'name', 'price')
+    places = Places.objects.filter(package=package)
+    
 
     if request.method == 'POST':
         print(request.POST)
@@ -139,11 +146,11 @@ def package_detail(request, pk):
             cart.save()
             # cart.food.set(food)
             # cart.accommodation.set(accommodation)
-            return render(request, 'cart.html', {'cart': cart, 'accommodations': accommodations, 'food': food, 'accommodation': accommodation, 'total_price': total_price})
+            return render(request, 'cart.html', {'cart': cart, 'accommodations': accommodations, 'food': food, 'accommodation': accommodation, 'total_price': total_price, 'places': places})
         else:
-            return render(request, 'package_detail.html', {'package': package, 'accommodations': accommodations, 'foods': foods, 'accommodation': accommodation, 'total_price': total_price})
+            return render(request, 'package_detail.html', {'package': package, 'accommodations': accommodations, 'foods': foods, 'accommodation': accommodation, 'total_price': total_price, 'places': places})
 
-    return render(request, 'package_detail.html', {'package': package, 'accommodations': accommodations, 'foods': foods, })
+    return render(request, 'package_detail.html', {'package': package, 'accommodations': accommodations, 'foods': foods, 'places': places})
 
 def cart(request):
     cart, created = Cart.objects.get_or_create(user=request.user)

@@ -5,7 +5,7 @@ from django.conf import settings
 
 class CustomUser(AbstractUser):
     is_manager = models.BooleanField(default=False)
-    name = models.CharField(default='name',null=True,max_length=255)
+    name = models.CharField(null=True,max_length=255)
     phone = models.CharField(null=True,blank=True,max_length=20)
     
     # Add any other fields as necessary
@@ -92,5 +92,7 @@ class Places(models.Model):
     package = models.ManyToManyField(Package)
     place = models.CharField(max_length=30)
 
+    class Meta:
+        verbose_name_plural = "Places"
     def __str__(self):
-        return f"{self.package.name} - {self.place}"
+        return f"{self.place}"
