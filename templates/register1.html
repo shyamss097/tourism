@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href={%static "css/register.css"%}>
+</head>
+
+<body>
+  <div class="container">
+    <div class="background-image"></div>
+    <div class="content">
+      <h2>Sign up</h2>
+      <form method="POST" class="form">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="{{ form.username.id_for_label }}">Username</label>
+          {{ form.username }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.password1.id_for_label }}">Password</label>
+          {{ form.password1 }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+          {{ form.password2 }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.name.id_for_label }}">Name</label>
+          {{ form.name }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.phone.id_for_label }}">Phone</label>
+          {{ form.phone }}
+        </div>
+        <div class="form-group form-check">
+          
+          <center><label class="form-check-label" for="{{ form.is_manager.id_for_label }}">Are you a Manager?</label></center>
+          <input type="checkbox" class="form-check-input" id="{{ form.is_manager.id_for_label }}"
+            name="{{ form.is_manager.name }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Sign up</button>
+      </form>
+      <center><p>Already have an account? <a href="{% url 'login' %}">Login</a></p></center>
+      
+    </div>
+  </div>
+</body>
+
+</html>

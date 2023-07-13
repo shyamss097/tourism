@@ -71,7 +71,7 @@ def register(request):
                 return redirect('home')
     else:
         form = CustomUserCreationForm()
-    return render(request,'register.html', {'form': form})
+    return render(request,'register1.html', {'form': form})
 
 def logout_view(request):
     logout(request)
@@ -89,9 +89,9 @@ def login_view(request):
         else:
             # Show an error message if authentication fails
             error_message = "Invalid login credentials. Please try again."
-            return render(request, 'registration/login.html', {'error_message': error_message})
+            return render(request, 'login.html', {'error_message': error_message})
     else:
-        return render(request, 'login.html')
+        return render(request, 'login1.html')
 
 
 def package_list(request):
@@ -333,9 +333,9 @@ def ticket1(request, cart_id, package_id):
     return render(request, 'ticket.html', context)
 
 def manager_dashboard(request):
-    package = Package.objects.get(manager=request.user)
-    tourists = Order.objects.filter(package = package)
-    return render(request, 'manager_dashboard.html', {'package': package, 'tourists': tourists})
+    packages = Package.objects.filter(manager=request.user)
+    tourists = Order.objects.filter(package = packages[0])
+    return render(request, 'manager_dashboard.html', {'packages': packages, 'tourists': tourists})
 
 
 def orders(request):
